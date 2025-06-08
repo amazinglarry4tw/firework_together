@@ -8,9 +8,7 @@ defmodule FireworkTogetherWeb.FireworkLive do
       Phoenix.PubSub.subscribe(FireworkTogether.PubSub, "fireworks")
     end
 
-    # Get existing fireworks from the manager
-    fireworks = FireworkManager.get_fireworks()
-    {:ok, assign(socket, :fireworks, fireworks)}
+    {:ok, stream(socket, :fireworks, [])}
   end
 
   @impl true
@@ -21,9 +19,10 @@ defmodule FireworkTogetherWeb.FireworkLive do
 
   @impl true
   def handle_info({:new_firework, firework}, socket) do
-    fireworks = [firework | socket.assigns.fireworks]
-    {:noreply, assign(socket, :fireworks, fireworks)}
+    # Use stream to append new fireworks without re-rendering existing ones
+    {:noreply, stream_insert(socket, :fireworks, firework)}
   end
+
 
   @impl true
   def render(assigns) do
@@ -40,13 +39,15 @@ defmodule FireworkTogetherWeb.FireworkLive do
         Click anywhere to create fireworks!
       </div>
 
-      <%= for firework <- @fireworks do %>
-        <div class="firework absolute pointer-events-none"
-             id={"firework-#{firework.id}"}
-             style={"left: #{firework.x}px; top: #{firework.y}px; --firework-color: #{firework.color};"}>
-          <div class="firework-explosion"></div>
-        </div>
-      <% end %>
+      <div id="fireworks" phx-update="stream">
+        <%= for {id, firework} <- @streams.fireworks do %>
+          <div class="firework absolute pointer-events-none"
+               id={id}
+               style={"left: #{firework.x}px; top: #{firework.y}px; --firework-color: #{firework.color};"}>
+            <div class="firework-explosion"></div>
+          </div>
+        <% end %>
+      </div>
     </div>
     """
   end

@@ -5,7 +5,8 @@
       "Bash(mix deps.get:*)",
       "mcp__ide__executeCode",
       "Bash(mix compile)",
-      "Bash(iex:*)"
+      "Bash(iex:*)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": []
   }
