@@ -74,12 +74,16 @@ mix phx.server
 - [x] Create basic CSS animations for firework effects
 - [x] Set up GitHub repository and initial commit
 
-### Phase 2: Core Functionality  
-- [ ] Implement click event handling in LiveView
-- [ ] Create firework state management
-- [ ] Add PubSub broadcasting
-- [ ] Implement basic firework rendering
-- [ ] Add firework cleanup/expiration
+### Phase 2: Core Functionality ✅ COMPLETED
+- [x] Implement click event handling in LiveView
+- [x] Create firework state management with GenServer
+- [x] Add PubSub broadcasting for real-time sync
+- [x] Implement basic firework rendering with struct
+- [x] Add firework cleanup/expiration with automatic cleanup
+- [x] Create Firework struct with proper data modeling
+- [x] Implement FireworkManager GenServer for state management
+- [x] Add automatic cleanup every 1 second for expired fireworks
+- [x] Limit to 100 max fireworks to prevent memory issues
 
 ### Phase 3: Animation & Styling
 - [ ] Design CSS firework animations

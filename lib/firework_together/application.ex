@@ -14,8 +14,8 @@ defmodule FireworkTogether.Application do
       {Phoenix.PubSub, name: FireworkTogether.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: FireworkTogether.Finch},
-      # Start a worker by calling: FireworkTogether.Worker.start_link(arg)
-      # {FireworkTogether.Worker, arg},
+      # Start the firework manager
+      FireworkTogether.FireworkManager,
       # Start to serve requests, typically the last entry
       FireworkTogetherWeb.Endpoint
     ]

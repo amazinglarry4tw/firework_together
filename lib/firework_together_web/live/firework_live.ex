@@ -1,5 +1,6 @@
 defmodule FireworkTogetherWeb.FireworkLive do
   use FireworkTogetherWeb, :live_view
+  alias FireworkTogether.FireworkManager
 
   @impl true
   def mount(_params, _session, socket) do
@@ -7,20 +8,14 @@ defmodule FireworkTogetherWeb.FireworkLive do
       Phoenix.PubSub.subscribe(FireworkTogether.PubSub, "fireworks")
     end
 
-    {:ok, assign(socket, :fireworks, [])}
+    # Get existing fireworks from the manager
+    fireworks = FireworkManager.get_fireworks()
+    {:ok, assign(socket, :fireworks, fireworks)}
   end
 
   @impl true
   def handle_event("create_firework", %{"x" => x, "y" => y}, socket) do
-    firework = %{
-      id: System.unique_integer([:positive]),
-      x: x,
-      y: y,
-      color: random_color(),
-      created_at: System.system_time(:millisecond)
-    }
-
-    Phoenix.PubSub.broadcast(FireworkTogether.PubSub, "fireworks", {:new_firework, firework})
+    FireworkManager.create_firework(x, y)
     {:noreply, socket}
   end
 
@@ -47,6 +42,7 @@ defmodule FireworkTogetherWeb.FireworkLive do
 
       <%= for firework <- @fireworks do %>
         <div class="firework absolute pointer-events-none"
+             id={"firework-#{firework.id}"}
              style={"left: #{firework.x}px; top: #{firework.y}px; --firework-color: #{firework.color};"}>
           <div class="firework-explosion"></div>
         </div>
@@ -55,8 +51,4 @@ defmodule FireworkTogetherWeb.FireworkLive do
     """
   end
 
-  defp random_color do
-    colors = ["#ff0080", "#00ff80", "#8000ff", "#ff8000", "#0080ff", "#ffff00", "#ff0040", "#40ff00"]
-    Enum.random(colors)
-  end
 end

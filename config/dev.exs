@@ -8,7 +8,9 @@ config :firework_together, FireworkTogether.Repo,
   database: "firework_together_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  queue_target: 5000,
+  queue_interval: 5000
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -66,7 +68,8 @@ config :firework_together, FireworkTogetherWeb.Endpoint,
 config :firework_together, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :console, format: "[$level] $message\n", level: :info
+
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
