@@ -46,6 +46,10 @@ defmodule FireworkTogether.FireworkManager do
   def handle_call({:create_firework, x, y, opts}, _from, state) do
     firework = Firework.new(x, y, opts)
     
+    # Log the firework type being created (only once from the manager)
+    require Logger
+    Logger.info("Creating firework type: #{firework.type} at (#{firework.x}, #{firework.y}) with color #{firework.color}")
+    
     # Add to state and limit total fireworks
     fireworks = [firework | state.fireworks] |> Enum.take(@max_fireworks)
     
@@ -67,8 +71,13 @@ defmodule FireworkTogether.FireworkManager do
 
   @impl true
   def handle_info(:cleanup_expired, state) do
-    # Remove expired fireworks
-    active_fireworks = Enum.reject(state.fireworks, &Firework.expired?/1)
+    # Find expired fireworks before removing them
+    {expired_fireworks, active_fireworks} = Enum.split_with(state.fireworks, &Firework.expired?/1)
+    
+    # Broadcast cleanup events for each expired firework
+    Enum.each(expired_fireworks, fn firework ->
+      Phoenix.PubSub.broadcast(FireworkTogether.PubSub, "fireworks", {:cleanup_firework, firework})
+    end)
     
     # Schedule next cleanup
     schedule_cleanup()

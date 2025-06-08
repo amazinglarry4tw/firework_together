@@ -23,6 +23,12 @@ defmodule FireworkTogetherWeb.FireworkLive do
     {:noreply, stream_insert(socket, :fireworks, firework)}
   end
 
+  @impl true
+  def handle_info({:cleanup_firework, firework}, socket) do
+    # Remove expired firework from the stream
+    {:noreply, stream_delete(socket, :fireworks, firework)}
+  end
+
 
   @impl true
   def render(assigns) do

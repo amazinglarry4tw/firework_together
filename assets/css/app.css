@@ -176,36 +176,20 @@
 
 /* Particles always use their own long animations regardless of firework type */
 .particle {
-  animation: explodeParticle 7s ease-out forwards !important;
+  animation: explodeParticle 5s ease-out forwards !important;
   animation-delay: var(--delay);
 }
 
 .particle.secondary {
-  animation: explodeParticle 7s ease-out forwards !important;
+  animation: explodeParticle 5s ease-out forwards !important;
   animation-delay: var(--delay);
 }
 
 .particle.tertiary {
-  animation: explodeParticle 7s ease-out forwards !important;
+  animation: explodeParticle 5s ease-out forwards !important;
   animation-delay: var(--delay);
 }
 
-/* Sparkler - additional visual effects */
-.firework-sparkler .firework-explosion {
-  background-image: 
-    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
-    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
-    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
-    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
-    radial-gradient(circle, var(--firework-color) 1px, transparent 1px);
-  background-position: 
-    -40px -40px,
-    40px -40px,
-    -40px 40px,
-    40px 40px,
-    0 0;
-  background-repeat: no-repeat;
-}
 
 /* All unused type-specific animations removed - using centralFlash for all types */
 
@@ -278,9 +262,6 @@
     animation-duration: 1.5s;
   }
   
-  .firework-sparkler .firework-explosion {
-    animation-duration: 2s;
-  }
   
   .firework-fountain .firework-explosion,
   .firework-fountain .firework-explosion::before,

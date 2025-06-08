@@ -66,14 +66,13 @@ defmodule FireworkTogether.Firework do
   Returns a list of available firework types.
   """
   def types do
-    [:burst, :sparkler, :fountain, :willow]
+    [:burst, :fountain, :willow]
   end
 
   @doc """
   Gets the CSS class for a firework type.
   """
   def css_class(:burst), do: "firework-burst"
-  def css_class(:sparkler), do: "firework-sparkler"
   def css_class(:fountain), do: "firework-fountain"
   def css_class(:willow), do: "firework-willow"
   def css_class(_), do: "firework-burst"
