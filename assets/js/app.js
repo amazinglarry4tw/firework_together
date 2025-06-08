@@ -31,8 +31,28 @@ Hooks.ClickHandler = {
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
       
+      // Show immediate click feedback
+      this.showClickFeedback(x, y)
+      
       this.pushEvent("create_firework", {x: x, y: y})
     })
+  },
+  
+  showClickFeedback(x, y) {
+    // Create click feedback element
+    const feedback = document.createElement('div')
+    feedback.className = 'click-feedback'
+    feedback.style.left = x + 'px'
+    feedback.style.top = y + 'px'
+    
+    this.el.appendChild(feedback)
+    
+    // Remove feedback after animation completes
+    setTimeout(() => {
+      if (feedback.parentNode) {
+        feedback.parentNode.removeChild(feedback)
+      }
+    }, 600)
   }
 }
 

@@ -41,10 +41,24 @@ defmodule FireworkTogetherWeb.FireworkLive do
 
       <div id="fireworks" phx-update="stream">
         <%= for {id, firework} <- @streams.fireworks do %>
-          <div class="firework absolute pointer-events-none"
+          <div class={["firework", "absolute", "pointer-events-none", FireworkTogether.Firework.css_class(firework.type)]}
                id={id}
                style={"left: #{firework.x}px; top: #{firework.y}px; --firework-color: #{firework.color};"}>
-            <div class="firework-explosion"></div>
+            <!-- Create multiple particles for realistic circular explosion -->
+            <div class="firework-explosion">
+              <!-- First ring - 8 particles -->
+              <%= for i <- 1..8 do %>
+                <div class="particle" style={"--angle: #{i * 45}deg; --delay: #{rem(i, 4) * 0.05}s; --distance: 120px;"}></div>
+              <% end %>
+              <!-- Second ring - 12 particles -->
+              <%= for i <- 1..12 do %>
+                <div class="particle secondary" style={"--angle: #{i * 30}deg; --delay: #{0.2 + rem(i, 3) * 0.1}s; --distance: 100px;"}></div>
+              <% end %>
+              <!-- Third ring - 16 particles -->
+              <%= for i <- 1..16 do %>
+                <div class="particle tertiary" style={"--angle: #{i * 22.5}deg; --delay: #{0.4 + rem(i, 4) * 0.1}s; --distance: 80px;"}></div>
+              <% end %>
+            </div>
           </div>
         <% end %>
       </div>

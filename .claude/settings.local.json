@@ -6,7 +6,8 @@
       "mcp__ide__executeCode",
       "Bash(mix compile)",
       "Bash(iex:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
