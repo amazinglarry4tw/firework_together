@@ -2,69 +2,321 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* Firework animations */
+/* Full viewport styles for firework page */
+#firework-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+}
+
+/* Realistic Firework Animations */
 .firework {
   transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
+/* Main explosion center - contains all particles */
 .firework-explosion {
-  width: 10px;
-  height: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+/* Bright initial flash at center */
+.firework-explosion::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: var(--firework-color);
   border-radius: 50%;
-  position: relative;
-  animation: explode 2s ease-out forwards;
+  animation: centralFlash 0.4s ease-out forwards;
+  box-shadow: 
+    0 0 30px var(--firework-color),
+    0 0 60px var(--firework-color),
+    0 0 90px rgba(255, 255, 255, 0.8);
 }
 
-.firework-explosion::before,
-.firework-explosion::after {
-  content: '';
+/* Individual particles that explode outward */
+.particle {
   position: absolute;
   width: 4px;
   height: 4px;
   background: var(--firework-color);
   border-radius: 50%;
-  animation: spark 2s ease-out forwards;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  animation-delay: var(--delay);
+  box-shadow: 
+    0 0 12px var(--firework-color),
+    0 0 24px var(--firework-color),
+    0 0 36px rgba(255, 255, 255, 0.6);
+  will-change: transform, opacity;
 }
 
-.firework-explosion::before {
-  top: -20px;
-  left: -20px;
-  animation-delay: 0.1s;
+/* Add trailing effect to particles */
+.particle::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--firework-color), transparent);
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: trail 7s ease-out forwards;
+  animation-delay: var(--delay);
 }
 
-.firework-explosion::after {
-  top: 20px;
-  left: 20px;
-  animation-delay: 0.2s;
-}
-
-@keyframes explode {
+@keyframes trail {
   0% {
-    transform: scale(0);
-    opacity: 1;
+    transform: scaleX(0);
+    opacity: 0.8;
   }
-  25% {
-    transform: scale(1);
-    opacity: 1;
+  50% {
+    transform: scaleX(2);
+    opacity: 0.4;
   }
   100% {
-    transform: scale(3);
+    transform: scaleX(0);
     opacity: 0;
   }
 }
 
-@keyframes spark {
+/* Central flash animation - bright and fast fade with complete removal */
+@keyframes centralFlash {
   0% {
-    transform: scale(0) translate(0, 0);
+    transform: translate(-50%, -50%) scale(0);
     opacity: 1;
+    filter: brightness(3);
   }
-  50% {
-    transform: scale(1) translate(var(--spark-x, 20px), var(--spark-y, -20px));
+  20% {
+    transform: translate(-50%, -50%) scale(4);
+    opacity: 1;
+    filter: brightness(2);
+  }
+  90% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0.1;
+    filter: brightness(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    filter: brightness(0);
+    visibility: hidden;
+  }
+}
+
+/* Main particle explosion animation - much longer visibility */
+@keyframes explodeParticle {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(0) scale(1.2);
+    opacity: 1;
+    filter: brightness(2.5);
+  }
+  10% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--distance, 100px) * 0.4)) scale(1);
+    opacity: 1;
+    filter: brightness(2);
+  }
+  30% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--distance, 100px) * 0.8)) scale(0.9);
+    opacity: 1;
+    filter: brightness(1.8);
+  }
+  60% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(var(--distance, 100px)) scale(0.7);
+    opacity: 0.9;
+    filter: brightness(1.4);
+  }
+  85% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--distance, 100px) * 1.1)) scale(0.4);
+    opacity: 0.5;
+    filter: brightness(1.1);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--distance, 100px) * 1.2)) scale(0.1);
+    opacity: 0;
+    filter: brightness(1);
+  }
+}
+
+/* Secondary particles - smaller and dimmer */
+.particle.secondary {
+  width: 2px;
+  height: 2px;
+  opacity: 0.8;
+}
+
+/* Tertiary particles - smallest and most transparent */
+.particle.tertiary {
+  width: 1.5px;
+  height: 1.5px;
+  opacity: 0.6;
+}
+
+/* Different Firework Types */
+/* All firework types use the same central flash animation for the center only */
+
+
+/* Particles always use their own long animations regardless of firework type */
+.particle {
+  animation: explodeParticle 7s ease-out forwards !important;
+  animation-delay: var(--delay);
+}
+
+.particle.secondary {
+  animation: explodeParticle 7s ease-out forwards !important;
+  animation-delay: var(--delay);
+}
+
+.particle.tertiary {
+  animation: explodeParticle 7s ease-out forwards !important;
+  animation-delay: var(--delay);
+}
+
+/* Sparkler - additional visual effects */
+.firework-sparkler .firework-explosion {
+  background-image: 
+    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
+    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
+    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
+    radial-gradient(circle, var(--firework-color) 1px, transparent 1px),
+    radial-gradient(circle, var(--firework-color) 1px, transparent 1px);
+  background-position: 
+    -40px -40px,
+    40px -40px,
+    -40px 40px,
+    40px 40px,
+    0 0;
+  background-repeat: no-repeat;
+}
+
+/* All unused type-specific animations removed - using centralFlash for all types */
+
+/* Responsive Design */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .firework-explosion {
+    width: 6px;
+    height: 6px;
+  }
+  
+  /* Reduce animation scale for smaller screens */
+  @keyframes centerExplode {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    15% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes sparklerEffect {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    25% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(5);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes starEffect {
+    0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(2) rotate(180deg);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(4) rotate(360deg);
+      opacity: 0;
+    }
+  }
+}
+
+/* Touch-friendly cursor */
+@media (pointer: coarse) {
+  #firework-container {
+    cursor: default;
+  }
+}
+
+/* Improve performance on lower-end devices */
+@media (prefers-reduced-motion: reduce) {
+  .firework-explosion {
+    animation-duration: 1.5s;
+  }
+  
+  .firework-sparkler .firework-explosion {
+    animation-duration: 2s;
+  }
+  
+  .firework-fountain .firework-explosion,
+  .firework-fountain .firework-explosion::before,
+  .firework-fountain .firework-explosion::after {
+    animation-duration: 2s;
+  }
+  
+  .firework-willow .firework-explosion,
+  .firework-willow .firework-explosion::before,
+  .firework-willow .firework-explosion::after {
+    animation-duration: 2.5s;
+  }
+}
+
+/* Click Feedback */
+.click-feedback {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: clickRipple 0.6s ease-out forwards;
+  transform: translate(-50%, -50%);
+  /* Performance optimizations */
+  will-change: transform, opacity;
+  transform: translate(-50%, -50%) translateZ(0);
+}
+
+@keyframes clickRipple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
     opacity: 1;
   }
   100% {
-    transform: scale(0) translate(var(--spark-x, 40px), var(--spark-y, -40px));
+    transform: translate(-50%, -50%) scale(3);
     opacity: 0;
   }
 }
