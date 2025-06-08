@@ -1,0 +1,70 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Firework animations */
+.firework {
+  transform: translate(-50%, -50%);
+}
+
+.firework-explosion {
+  width: 10px;
+  height: 10px;
+  background: var(--firework-color);
+  border-radius: 50%;
+  position: relative;
+  animation: explode 2s ease-out forwards;
+}
+
+.firework-explosion::before,
+.firework-explosion::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--firework-color);
+  border-radius: 50%;
+  animation: spark 2s ease-out forwards;
+}
+
+.firework-explosion::before {
+  top: -20px;
+  left: -20px;
+  animation-delay: 0.1s;
+}
+
+.firework-explosion::after {
+  top: 20px;
+  left: 20px;
+  animation-delay: 0.2s;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes spark {
+  0% {
+    transform: scale(0) translate(0, 0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1) translate(var(--spark-x, 20px), var(--spark-y, -20px));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0) translate(var(--spark-x, 40px), var(--spark-y, -40px));
+    opacity: 0;
+  }
+}
